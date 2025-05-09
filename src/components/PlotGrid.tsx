@@ -75,7 +75,7 @@ const PlotGrid: React.FC<PlotGridProps> = ({ plots: initialPlots, selectedBlock 
         if (booking) {
           return {
             ...plot,
-            status: 'Booked',
+            status: 'Booked' as const, // Explicitly type as 'Booked' literal
             bookingInfo: {
               bookedBy: booking.booked_by,
               bookedAt: booking.booked_at

@@ -10,7 +10,7 @@ const generatePlots = (blockId: 'A' | 'B' | 'C', count: number): PlotData[] => {
       block: blockId,
       number,
       size: 100, // Default size
-      status: Math.random() > 0.2 ? 'Available' : 'Booked' // Randomly assign status with 80% available
+      status: 'Available' // All plots are initially available
     };
   });
 };
