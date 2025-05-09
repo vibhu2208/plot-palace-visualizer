@@ -26,7 +26,7 @@ const Home = () => {
       <div className="bg-gradient-to-br from-primary/90 to-primary py-16 md:py-24">
         <div className="container mx-auto text-center px-4">
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
-            Welcome to Plot Palace Visualizer
+            Welcome to HomeHunts
           </h1>
           <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-8">
             Find and book your perfect plot with our interactive plot booking system. Browse available plots, view details, and secure your dream location.
