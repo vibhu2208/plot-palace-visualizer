@@ -7,4 +7,19 @@ export interface PlotData {
   number: number;
   size: number;
   status: 'Available' | 'Booked';
+  bookingInfo?: {
+    bookedBy: string;
+    bookedAt: string;
+  };
+}
+
+export interface PlotBooking {
+  id: number;
+  plot_id: string;
+  block_id: string;
+  plot_number: number;
+  booked_by: string;
+  contact_info: string | null;
+  booked_at: string;
+  note: string | null;
 }

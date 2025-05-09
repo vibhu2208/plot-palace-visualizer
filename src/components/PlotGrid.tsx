@@ -1,16 +1,23 @@
 
-import React, { useState, useMemo } from 'react';
-import { BlockId, PlotData } from '../types';
+import React, { useState, useEffect, useMemo } from 'react';
+import { BlockId, PlotData, PlotBooking } from '../types';
 import Plot from './Plot';
 import PlotInfoCard from './PlotInfoCard';
+import BookingModal from './BookingModal';
+import { supabase } from '../integrations/supabase/client';
+import { useToast } from '../hooks/use-toast';
 
 interface PlotGridProps {
   plots: PlotData[];
   selectedBlock: BlockId | 'All';
 }
 
-const PlotGrid: React.FC<PlotGridProps> = ({ plots, selectedBlock }) => {
+const PlotGrid: React.FC<PlotGridProps> = ({ plots: initialPlots, selectedBlock }) => {
+  const [plots, setPlots] = useState<PlotData[]>(initialPlots);
   const [selectedPlot, setSelectedPlot] = useState<PlotData | null>(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
   
   const filteredPlots = useMemo(() => {
     if (selectedBlock === 'All') {
@@ -32,8 +39,75 @@ const PlotGrid: React.FC<PlotGridProps> = ({ plots, selectedBlock }) => {
     return groups;
   }, [filteredPlots]);
   
+  useEffect(() => {
+    fetchBookings();
+    
+    // Set up real-time subscription for new bookings
+    const channel = supabase
+      .channel('public:plot_bookings')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'plot_bookings' }, 
+        () => {
+          fetchBookings();
+        }
+      )
+      .subscribe();
+    
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+  
+  const fetchBookings = async () => {
+    setIsLoading(true);
+    
+    try {
+      const { data: bookings, error } = await supabase
+        .from('plot_bookings')
+        .select('*');
+        
+      if (error) throw error;
+      
+      // Update plots with booking information
+      const updatedPlots = initialPlots.map(plot => {
+        const booking = bookings?.find(b => b.plot_id === plot.id);
+        
+        if (booking) {
+          return {
+            ...plot,
+            status: 'Booked',
+            bookingInfo: {
+              bookedBy: booking.booked_by,
+              bookedAt: booking.booked_at
+            }
+          };
+        }
+        
+        return plot;
+      });
+      
+      setPlots(updatedPlots);
+    } catch (error: any) {
+      toast({
+        title: 'Error fetching bookings',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
   const handlePlotClick = (plot: PlotData) => {
-    setSelectedPlot(prevPlot => prevPlot?.id === plot.id ? null : plot);
+    setSelectedPlot(plot);
+    
+    if (plot.status === 'Available') {
+      setIsBookingModalOpen(true);
+    }
+  };
+  
+  const handleBookingComplete = () => {
+    fetchBookings();
   };
   
   const renderBlock = (blockId: BlockId, blockPlots: PlotData[]) => {
@@ -72,12 +146,23 @@ const PlotGrid: React.FC<PlotGridProps> = ({ plots, selectedBlock }) => {
   
   return (
     <div className="relative">
+      {isLoading && (
+        <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-10">
+          <p className="text-lg font-medium">Loading plots...</p>
+        </div>
+      )}
       <div className="overflow-x-auto pb-20">
         {Object.entries(blockGroups).map(([blockId, blockPlots]) => 
           renderBlock(blockId as BlockId, blockPlots)
         )}
       </div>
-      <PlotInfoCard plot={selectedPlot} />
+      {selectedPlot && !isBookingModalOpen && <PlotInfoCard plot={selectedPlot} />}
+      <BookingModal 
+        plot={selectedPlot}
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        onBookingComplete={handleBookingComplete}
+      />
     </div>
   );
 };

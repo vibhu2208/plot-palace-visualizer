@@ -4,6 +4,7 @@ import PlotGrid from '../components/PlotGrid';
 import BlockFilter from '../components/BlockFilter';
 import { BlockId } from '../types';
 import { plots } from '../data/plotData';
+import { Toaster } from '../components/ui/toaster';
 
 const Index = () => {
   const [selectedBlock, setSelectedBlock] = useState<BlockId | 'All'>('All');
@@ -28,9 +29,10 @@ const Index = () => {
         </div>
         
         <div className="mt-6 text-center text-sm text-gray-500">
-          <p>Click on any plot to see detailed information</p>
+          <p>Click on any plot to see detailed information or book it</p>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 };

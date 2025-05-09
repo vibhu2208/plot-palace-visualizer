@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { PlotData } from '../types';
+import { format } from 'date-fns';
 
 interface PlotInfoCardProps {
   plot: PlotData | null;
@@ -31,6 +32,23 @@ const PlotInfoCard: React.FC<PlotInfoCardProps> = ({ plot }) => {
             {plot.status}
           </span>
         </div>
+        
+        {plot.status === 'Booked' && plot.bookingInfo && (
+          <>
+            <div className="pt-2 border-t border-gray-200 mt-2">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Booked By:</span>
+                <span className="font-medium">{plot.bookingInfo.bookedBy}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Booked On:</span>
+                <span className="font-medium">
+                  {format(new Date(plot.bookingInfo.bookedAt), 'MMM d, yyyy')}
+                </span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
