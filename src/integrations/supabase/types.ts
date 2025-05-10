@@ -17,8 +17,10 @@ export type Database = {
           contact_info: string | null
           id: number
           note: string | null
+          phone: string | null
           plot_id: string
           plot_number: number
+          visit_date: string | null
         }
         Insert: {
           block_id: string
@@ -27,8 +29,10 @@ export type Database = {
           contact_info?: string | null
           id?: number
           note?: string | null
+          phone?: string | null
           plot_id: string
           plot_number: number
+          visit_date?: string | null
         }
         Update: {
           block_id?: string
@@ -37,8 +41,10 @@ export type Database = {
           contact_info?: string | null
           id?: number
           note?: string | null
+          phone?: string | null
           plot_id?: string
           plot_number?: number
+          visit_date?: string | null
         }
         Relationships: []
       }

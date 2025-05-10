@@ -91,8 +91,8 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
         plot_number: plot.number,
         booked_by: values.fullName,
         contact_info: values.email,
-        phone: values.phone,
-        visit_date: values.visitDate ? values.visitDate.toISOString() : null,
+        phone: values.phone, // Make sure this field is included
+        visit_date: values.visitDate ? values.visitDate.toISOString() : null, // Make sure this field is included
         note: values.comments || null
       };
       
@@ -142,6 +142,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
       onClose();
       resetForm();
     } catch (error: any) {
+      console.error('Booking submission error:', error);
       toast({
         title: 'Error',
         description: error.message || 'Failed to book plot. Please try again.',
