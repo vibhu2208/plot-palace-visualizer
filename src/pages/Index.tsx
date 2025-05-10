@@ -5,12 +5,13 @@ import BlockFilter from '../components/BlockFilter';
 import { BlockId } from '../types';
 import { plots } from '../data/plotData';
 import { Toaster } from '../components/ui/toaster';
+import Layout from '../components/Layout';
 
 const Index = () => {
   const [selectedBlock, setSelectedBlock] = useState<BlockId | 'All'>('All');
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <Layout>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-center mb-8">Home Hunts</h1>
         
@@ -33,7 +34,7 @@ const Index = () => {
         </div>
       </div>
       <Toaster />
-    </div>
+    </Layout>
   );
 };
 

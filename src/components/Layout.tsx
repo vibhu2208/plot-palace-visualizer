@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, MapPin, Mail, FileText } from 'lucide-react';
+import { Home, MapPin, Mail, FileText, Linkedin, Instagram, Phone } from 'lucide-react';
 import MobileMenuToggle from './MobileMenuToggle';
 
 interface LayoutProps {
@@ -128,45 +128,74 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {children}
       </main>
       
-      {/* Footer */}
-      <footer className="bg-white shadow-inner py-8">
-        <div className="container mx-auto px-4">
-          <div className="md:flex md:justify-between">
-            <div className="mb-6 md:mb-0">
-              <Link to="/" className="flex items-center">
-                <MapPin className="h-8 w-8 text-primary" />
-                <span className="ml-2 text-xl font-bold text-gray-900">Plot Palace</span>
+      {/* Redesigned Footer */}
+      <footer className="bg-[#1A1F2C] text-white">
+        <div className="container mx-auto px-4 py-12">
+          {/* Footer content grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            {/* Company Info */}
+            <div>
+              <Link to="/" className="inline-flex items-center gap-2 mb-4">
+                <MapPin className="h-7 w-7 text-primary" />
+                <span className="text-2xl font-bold">Home Hunts</span>
               </Link>
-              <p className="mt-2 text-sm text-gray-600 max-w-md">
-                Find and book your perfect plot easily with our interactive plot booking system.
+              <p className="text-gray-400 mt-2 mb-6 max-w-xs">
+                Building Dreams, One Plot at a Time. Find your perfect plot with our 
+                streamlined and transparent booking process.
               </p>
+              <div className="flex space-x-4">
+                <a href="https://linkedin.com" className="hover:text-primary transition-colors" aria-label="LinkedIn">
+                  <Linkedin className="h-6 w-6" />
+                </a>
+                <a href="https://instagram.com" className="hover:text-primary transition-colors" aria-label="Instagram">
+                  <Instagram className="h-6 w-6" />
+                </a>
+                <a href="https://wa.me/1234567890" className="hover:text-primary transition-colors" aria-label="WhatsApp">
+                  <Phone className="h-6 w-6" />
+                </a>
+              </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
-              <div>
-                <h3 className="mb-4 text-sm font-semibold text-gray-900 uppercase">Quick Links</h3>
-                <ul className="text-gray-600">
-                  <li className="mb-2">
-                    <Link to="/" className="hover:underline">Home</Link>
-                  </li>
-                  <li className="mb-2">
-                    <Link to="/plots" className="hover:underline">Plot Booking</Link>
-                  </li>
-                  <li className="mb-2">
-                    <Link to="/contact" className="hover:underline">Contact</Link>
-                  </li>
-                  <li>
-                    <Link to="/privacy" className="hover:underline">Privacy Policy</Link>
-                  </li>
-                </ul>
-              </div>
+            {/* Quick Links */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Quick Links</h3>
+              <nav className="flex flex-col space-y-2">
+                <Link to="/" className="text-gray-400 hover:text-primary transition-colors">Home</Link>
+                <Link to="/plots" className="text-gray-400 hover:text-primary transition-colors">Available Plots</Link>
+                <Link to="/contact" className="text-gray-400 hover:text-primary transition-colors">Contact Us</Link>
+                <Link to="/privacy" className="text-gray-400 hover:text-primary transition-colors">Privacy Policy</Link>
+                <Link to="/" className="text-gray-400 hover:text-primary transition-colors">FAQ</Link>
+              </nav>
+            </div>
+            
+            {/* Contact */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Contact Us</h3>
+              <address className="not-italic text-gray-400 space-y-2">
+                <p className="flex items-start">
+                  <MapPin className="h-5 w-5 mr-2 mt-0.5 text-primary" />
+                  <span>123 Plot Avenue<br />Land District<br />Property City, PC 12345</span>
+                </p>
+                <p className="flex items-center">
+                  <Mail className="h-5 w-5 mr-2 text-primary" />
+                  <a href="mailto:info@homehunts.com" className="hover:text-primary transition-colors">
+                    info@homehunts.com
+                  </a>
+                </p>
+                <p className="flex items-center">
+                  <Phone className="h-5 w-5 mr-2 text-primary" />
+                  <a href="tel:+1234567890" className="hover:text-primary transition-colors">
+                    (123) 456-7890
+                  </a>
+                </p>
+              </address>
             </div>
           </div>
           
-          <hr className="my-6 border-gray-200 sm:mx-auto" />
-          
-          <div className="text-center text-sm text-gray-600">
-            <span>© {new Date().getFullYear()} Plot Palace. All Rights Reserved.</span>
+          {/* Copyright line */}
+          <div className="border-t border-gray-800 pt-6 text-center text-gray-500 text-sm">
+            <p>© {new Date().getFullYear()} Home Hunts. All Rights Reserved.</p>
+            <p className="mt-2 font-serif italic">Building Dreams, One Plot at a Time</p>
           </div>
         </div>
       </footer>

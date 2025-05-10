@@ -20,6 +20,8 @@ export interface PlotBooking {
   plot_number: number;
   booked_by: string;
   contact_info: string | null;
+  phone: string | null;
+  visit_date: string | null;
   booked_at: string;
   note: string | null;
 }
