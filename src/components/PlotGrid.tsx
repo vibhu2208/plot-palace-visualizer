@@ -6,6 +6,8 @@ import PlotInfoCard from './PlotInfoCard';
 import BookingModal from './BookingModal';
 import { supabase } from '../integrations/supabase/client';
 import { useToast } from '../hooks/use-toast';
+import { Loader2, MapPin, AlertCircle } from 'lucide-react';
+import { Card, CardContent } from './ui/card';
 
 interface PlotGridProps {
   plots: PlotData[];
@@ -122,7 +124,7 @@ const PlotGrid: React.FC<PlotGridProps> = ({ plots: initialPlots, selectedBlock 
     for (let i = 0; i < numberOfRows; i++) {
       const rowPlots = blockPlots.slice(i * plotsPerRow, (i + 1) * plotsPerRow);
       rows.push(
-        <div key={`${blockId}-row-${i}`} className="flex justify-center">
+        <div key={`${blockId}-row-${i}`} className="flex justify-center flex-wrap">
           {rowPlots.map(plot => (
             <Plot
               key={plot.id}
@@ -135,28 +137,48 @@ const PlotGrid: React.FC<PlotGridProps> = ({ plots: initialPlots, selectedBlock 
     }
     
     return (
-      <div key={blockId} className="mb-8">
-        <h2 className="text-xl font-bold mb-3 text-center">Block {blockId}</h2>
-        <div className="flex flex-col items-center">
-          {rows}
+      <Card key={blockId} className="mb-8 overflow-hidden shadow-md border-gray-200 glassmorphism">
+        <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-4 border-b border-gray-100">
+          <h2 className="text-xl font-bold flex items-center justify-center gap-2">
+            <MapPin className="h-5 w-5 text-primary" />
+            <span>Block {blockId}</span>
+          </h2>
         </div>
-      </div>
+        <CardContent className="p-6">
+          <div className="flex flex-col items-center">
+            {rows}
+          </div>
+        </CardContent>
+      </Card>
     );
   };
   
   return (
     <div className="relative">
       {isLoading && (
-        <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-10">
-          <p className="text-lg font-medium">Loading plots...</p>
+        <div className="absolute inset-0 glassmorphism flex items-center justify-center z-10 rounded-lg">
+          <div className="bg-white p-4 rounded-xl shadow-lg flex items-center gap-3">
+            <Loader2 className="h-6 w-6 text-primary animate-spin" />
+            <p className="text-lg font-medium">Loading plots...</p>
+          </div>
         </div>
       )}
-      <div className="overflow-x-auto pb-20">
+      
+      {filteredPlots.length === 0 && !isLoading && (
+        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg flex items-center gap-3 mb-4">
+          <AlertCircle className="h-5 w-5 text-yellow-500" />
+          <p>No plots found for the selected filter.</p>
+        </div>
+      )}
+      
+      <div className="overflow-x-auto pb-24">
         {Object.entries(blockGroups).map(([blockId, blockPlots]) => 
           renderBlock(blockId as BlockId, blockPlots)
         )}
       </div>
+      
       {selectedPlot && !isBookingModalOpen && <PlotInfoCard plot={selectedPlot} />}
+      
       <BookingModal 
         plot={selectedPlot}
         isOpen={isBookingModalOpen}
