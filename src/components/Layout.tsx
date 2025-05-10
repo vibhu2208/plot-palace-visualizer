@@ -23,7 +23,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="text-xl font-bold text-primary flex items-center gap-2">
               <MapPin className="h-6 w-6" />
-              <span>Plot Palace</span>
+              <span>Home Hunts</span>
             </Link>
             
             <nav className="hidden md:flex space-x-1">
