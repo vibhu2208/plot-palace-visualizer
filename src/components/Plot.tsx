@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { PlotData } from '../types';
 import { CheckCircle2, XCircle } from 'lucide-react';
@@ -6,16 +5,19 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 import { format } from 'date-fns';
 
 interface PlotProps {
-  plot: PlotData;
-  onClick: (plot: PlotData) => void;
+  plot: PlotData; // Plot data object
+  onClick: (plot: PlotData) => void; // Callback when plot is clicked
 }
 
 const Plot: React.FC<PlotProps> = ({ plot, onClick }) => {
+  // Determine if the plot is available
   const isAvailable = plot.status === 'Available';
   
   return (
+    // HoverCard provides a tooltip with more info on hover
     <HoverCard openDelay={200} closeDelay={100}>
       <HoverCardTrigger asChild>
+        {/* Main plot box, styled based on availability */}
         <div 
           className={`w-14 h-14 md:w-16 md:h-16 flex flex-col items-center justify-center 
                      border-2 transition-all duration-300 cursor-pointer relative plot-hover
@@ -26,14 +28,17 @@ const Plot: React.FC<PlotProps> = ({ plot, onClick }) => {
           onClick={() => onClick(plot)}
           title={plot.bookingInfo ? `Booked by ${plot.bookingInfo.bookedBy}` : undefined}
         >
+          {/* Plot number */}
           <span className="text-base md:text-lg font-semibold">
             {plot.number}
           </span>
           
+          {/* Plot size */}
           <span className="text-xs mt-0.5">
             {plot.size} sq. yd
           </span>
           
+          {/* Status icon (available/booked) */}
           <div className="absolute -top-1.5 -right-1.5">
             {isAvailable ? (
               <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 text-green-500 bg-white rounded-full" />
@@ -42,6 +47,7 @@ const Plot: React.FC<PlotProps> = ({ plot, onClick }) => {
             )}
           </div>
           
+          {/* Show booked by name if not available */}
           {!isAvailable && plot.bookingInfo && (
             <div className="absolute -bottom-1 left-0 right-0 bg-red-400 rounded-b-xl h-4 overflow-hidden flex items-center justify-center">
               <span className="text-[8px] text-white px-1 truncate block font-medium">
@@ -51,6 +57,7 @@ const Plot: React.FC<PlotProps> = ({ plot, onClick }) => {
           )}
         </div>
       </HoverCardTrigger>
+      {/* Tooltip content with detailed plot info */}
       <HoverCardContent className="w-64 p-0 glassmorphism border border-gray-200">
         <div className="p-4">
           <h4 className="text-sm font-semibold mb-2">Plot {plot.number}</h4>
@@ -70,6 +77,7 @@ const Plot: React.FC<PlotProps> = ({ plot, onClick }) => {
               </span>
             </div>
             
+            {/* Show booking info if not available */}
             {!isAvailable && plot.bookingInfo && (
               <div className="pt-1 border-t border-gray-100 mt-1">
                 <div className="flex justify-between">

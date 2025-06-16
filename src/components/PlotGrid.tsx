@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { BlockId, PlotData, PlotBooking } from '../types';
 import Plot from './Plot';
@@ -15,12 +14,17 @@ interface PlotGridProps {
 }
 
 const PlotGrid: React.FC<PlotGridProps> = ({ plots: initialPlots, selectedBlock }) => {
+  // State for all plots (with booking info)
   const [plots, setPlots] = useState<PlotData[]>(initialPlots);
+  // State for currently selected plot (for info/booking)
   const [selectedPlot, setSelectedPlot] = useState<PlotData | null>(null);
+  // State for booking modal visibility
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  // Loading state for fetching bookings
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   
+  // Filter plots by selected block
   const filteredPlots = useMemo(() => {
     if (selectedBlock === 'All') {
       return plots;
@@ -28,6 +32,7 @@ const PlotGrid: React.FC<PlotGridProps> = ({ plots: initialPlots, selectedBlock 
     return plots.filter(plot => plot.block === selectedBlock);
   }, [plots, selectedBlock]);
   
+  // Group plots by block for rendering
   const blockGroups = useMemo(() => {
     const groups: Record<string, PlotData[]> = {};
     
@@ -60,6 +65,7 @@ const PlotGrid: React.FC<PlotGridProps> = ({ plots: initialPlots, selectedBlock 
     };
   }, []);
   
+  // Fetch bookings from the database and update plot statuses
   const fetchBookings = async () => {
     setIsLoading(true);
     
@@ -100,6 +106,7 @@ const PlotGrid: React.FC<PlotGridProps> = ({ plots: initialPlots, selectedBlock 
     }
   };
   
+  // Handle clicking a plot (open info or booking modal)
   const handlePlotClick = (plot: PlotData) => {
     setSelectedPlot(plot);
     
@@ -108,10 +115,12 @@ const PlotGrid: React.FC<PlotGridProps> = ({ plots: initialPlots, selectedBlock 
     }
   };
   
+  // Callback after booking is complete
   const handleBookingComplete = () => {
     fetchBookings();
   };
   
+  // Render a block section with its plots in a grid
   const renderBlock = (blockId: BlockId, blockPlots: PlotData[]) => {
     // Calculate the number of plots per row based on the block
     const plotsPerRow = blockId === 'A' ? 10 : 12; 
@@ -155,6 +164,7 @@ const PlotGrid: React.FC<PlotGridProps> = ({ plots: initialPlots, selectedBlock 
   
   return (
     <div className="relative">
+      {/* Loading overlay */}
       {isLoading && (
         <div className="absolute inset-0 glassmorphism flex items-center justify-center z-10 rounded-lg">
           <div className="bg-white p-4 rounded-xl shadow-lg flex items-center gap-3">
@@ -164,6 +174,7 @@ const PlotGrid: React.FC<PlotGridProps> = ({ plots: initialPlots, selectedBlock 
         </div>
       )}
       
+      {/* No plots found message */}
       {filteredPlots.length === 0 && !isLoading && (
         <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg flex items-center gap-3 mb-4">
           <AlertCircle className="h-5 w-5 text-yellow-500" />
@@ -171,14 +182,17 @@ const PlotGrid: React.FC<PlotGridProps> = ({ plots: initialPlots, selectedBlock 
         </div>
       )}
       
+      {/* Render all blocks and their plots */}
       <div className="overflow-x-auto pb-24">
         {Object.entries(blockGroups).map(([blockId, blockPlots]) => 
           renderBlock(blockId as BlockId, blockPlots)
         )}
       </div>
       
+      {/* Show info card for selected plot if not booking */}
       {selectedPlot && !isBookingModalOpen && <PlotInfoCard plot={selectedPlot} />}
       
+      {/* Booking modal for available plots */}
       <BookingModal 
         plot={selectedPlot}
         isOpen={isBookingModalOpen}

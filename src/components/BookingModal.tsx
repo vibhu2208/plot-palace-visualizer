@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useState } from 'react';
 import { PlotData } from '../types';
@@ -19,6 +18,7 @@ import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { cn } from '@/lib/utils';
 
+// Props for the BookingModal component
 interface BookingModalProps {
   plot: PlotData | null;
   isOpen: boolean;
@@ -26,6 +26,7 @@ interface BookingModalProps {
   onBookingComplete: () => void;
 }
 
+// Zod schema for form validation
 const bookingFormSchema = z.object({
   fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -38,12 +39,14 @@ const bookingFormSchema = z.object({
 type BookingFormValues = z.infer<typeof bookingFormSchema>;
 
 const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBookingComplete }) => {
+  // State for loading, step, and uploaded file
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [govIdFile, setGovIdFile] = useState<File | null>(null);
   const { toast } = useToast();
   const totalSteps = 3;
 
+  // React Hook Form setup
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
@@ -54,30 +57,35 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
     },
   });
 
+  // Handle file input change for government ID
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setGovIdFile(e.target.files[0]);
     }
   };
 
+  // Go to next step in the form
   const nextStep = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     }
   };
 
+  // Go to previous step in the form
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
   };
 
+  // Reset form and state
   const resetForm = () => {
     form.reset();
     setGovIdFile(null);
     setCurrentStep(1);
   };
 
+  // Handle form submission
   const onSubmit = async (values: BookingFormValues) => {
     if (!plot) return;
     
@@ -164,6 +172,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
           </DialogDescription>
         </DialogHeader>
         
+        {/* Stepper UI for multi-step form */}
         <div className="mb-6">
           <div className="flex items-center justify-between">
             {Array.from({length: totalSteps}, (_, i) => i + 1).map((step) => (
@@ -183,7 +192,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
                 </span>
               </div>
             ))}
-            
+            {/* Stepper progress bars */}
             <div className={cn(
               "h-1 flex-1 mx-2", 
               currentStep > 1 ? "bg-primary/70" : "bg-muted"
@@ -194,11 +203,13 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
             )} style={{margin: "0 8px", position: "relative", top: "-14px"}}></div>
           </div>
         </div>
-
+        
+        {/* Booking form with steps */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {currentStep === 1 && (
               <>
+                {/* Full Name field */}
                 <FormField
                   control={form.control}
                   name="fullName"
@@ -213,6 +224,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
                   )}
                 />
 
+                {/* Email field */}
                 <FormField
                   control={form.control}
                   name="email"
@@ -227,6 +239,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
                   )}
                 />
 
+                {/* Phone field */}
                 <FormField
                   control={form.control}
                   name="phone"
@@ -245,6 +258,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
 
             {currentStep === 2 && (
               <>
+                {/* Visit Date field with calendar popover */}
                 <FormField
                   control={form.control}
                   name="visitDate"
@@ -285,6 +299,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
                   )}
                 />
 
+                {/* Government ID upload */}
                 <div className="space-y-2">
                   <Label htmlFor="govId">Government ID (Optional)</Label>
                   <Input
@@ -298,6 +313,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
                   </p>
                 </div>
 
+                {/* Additional comments */}
                 <FormField
                   control={form.control}
                   name="comments"
@@ -322,6 +338,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Booking Summary</h3>
                 
+                {/* Summary of booking details */}
                 <div className="rounded-md bg-muted/50 p-4 space-y-2">
                   <div className="grid grid-cols-2 gap-1">
                     <span className="text-sm font-medium">Plot:</span>
@@ -371,6 +388,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ plot, isOpen, onClose, onBo
               </div>
             )}
             
+            {/* Navigation and submit buttons */}
             <div className="flex justify-between space-x-2 pt-4">
               {currentStep > 1 && (
                 <Button type="button" variant="outline" onClick={prevStep} disabled={isLoading}>
